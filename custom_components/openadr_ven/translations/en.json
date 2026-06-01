@@ -2,20 +2,46 @@
   "config": {
     "step": {
       "user": {
-        "title": "OpenADR VEN — connection",
+        "title": "OpenADR VEN — protocol version",
         "data": {
-          "vtn_url":       "VTN URL",
-          "ven_name":      "VEN name",
-          "verify_tls":    "Verify TLS certificate",
-          "cert_path":     "Client certificate path (.crt)",
-          "key_path":      "Private key path (.key)",
-          "ca_cert_path":  "CA certificate path (.crt)"
+          "protocol_version": "OpenADR protocol version"
         },
         "data_description": {
-          "vtn_url":      "Full HTTPS URL of the VTN endpoint",
-          "ven_name":     "Unique identifier for this VEN",
+          "protocol_version": "Select 2.0b for XML-SOAP with mutual TLS, or 3.0 for REST with OAuth2"
+        }
+      },
+      "v2_connection": {
+        "title": "OpenADR 2.0b — connection",
+        "data": {
+          "vtn_url":      "VTN URL",
+          "ven_name":     "VEN name",
+          "verify_tls":   "Verify TLS certificate",
+          "cert_path":    "Client certificate path (.crt)",
+          "key_path":     "Private key path (.key)",
+          "ca_cert_path": "CA certificate path (.crt)"
+        },
+        "data_description": {
+          "vtn_url":      "Full HTTPS URL of the VTN SOAP endpoint",
+          "ven_name":     "Unique identifier for this VEN (agree with operator)",
           "cert_path":    "Leave blank for unauthenticated connections",
-          "ca_cert_path": "Leave blank to use system CA store"
+          "ca_cert_path": "Leave blank to use the system CA store"
+        }
+      },
+      "v3_connection": {
+        "title": "OpenADR 3.0 — connection",
+        "data": {
+          "vtn_url":       "VTN base URL",
+          "ven_name":      "VEN name",
+          "token_url":     "OAuth2 token endpoint",
+          "client_id":     "OAuth2 client ID",
+          "client_secret": "OAuth2 client secret"
+        },
+        "data_description": {
+          "vtn_url":       "Base URL of the VTN REST API (without trailing slash)",
+          "ven_name":      "Unique identifier for this VEN (agree with operator)",
+          "token_url":     "Full URL of the OAuth2 token endpoint",
+          "client_id":     "Issued by the grid operator's identity provider",
+          "client_secret": "Issued by the grid operator's identity provider"
         }
       },
       "target": {
@@ -24,13 +50,14 @@
           "target_entity": "Modbus power limit entity"
         },
         "data_description": {
-          "target_entity": "The number entity that controls inverter power (e.g. number.inverter_power_limit)"
+          "target_entity": "The number entity that controls inverter active power (0–100%)"
         }
       }
     },
     "error": {
-      "cannot_connect": "Cannot reach VTN — check the URL and certificates",
-      "invalid_cert":   "Certificate or key file not found or invalid"
+      "cannot_connect": "Cannot reach VTN — check the URL and network connectivity",
+      "invalid_cert":   "Certificate or key file not found or unreadable",
+      "invalid_auth":   "OAuth2 credentials rejected — check client ID and secret"
     },
     "abort": {
       "already_configured": "This VEN is already configured"
@@ -40,12 +67,16 @@
     "step": {
       "init": {
         "title": "Signal mapping",
-        "description": "Map OpenADR SIMPLE signal levels to inverter power setpoints.",
+        "description": "Map OpenADR SIMPLE signal levels to inverter power setpoints. For OpenADR 3.0, you can also adjust the poll interval.",
         "data": {
-          "level_0_pct": "SIMPLE level 0 — setpoint (%)",
-          "level_1_pct": "SIMPLE level 1 — setpoint (%)",
-          "level_2_pct": "SIMPLE level 2 — setpoint (%)",
-          "level_3_pct": "SIMPLE level 3 — setpoint (%)"
+          "level_0_pct":    "SIMPLE level 0 — setpoint (%)",
+          "level_1_pct":    "SIMPLE level 1 — setpoint (%)",
+          "level_2_pct":    "SIMPLE level 2 — setpoint (%)",
+          "level_3_pct":    "SIMPLE level 3 — setpoint (%)",
+          "poll_interval":  "Poll interval (seconds)"
+        },
+        "data_description": {
+          "poll_interval": "How often to check the VTN for new events (OpenADR 3.0 only, 10–3600s)"
         }
       }
     }
