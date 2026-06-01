@@ -37,7 +37,7 @@ from .const import (
     DOMAIN,
     PROTOCOL_V3,
 )
-from .ven import EventCallback, NormalizedEvent, OpenADR2Client, OpenADR3Client, VENClientBase
+from .ven import NormalizedEvent, OpenADR2Client, OpenADR3Client, VENClientBase
 
 _LOGGER = logging.getLogger(__name__)
 PLATFORMS = ["sensor"]
