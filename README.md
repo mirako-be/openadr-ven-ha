@@ -22,7 +22,7 @@ The VEN runs as a supervised background task inside HA's event loop — no separ
 ## Requirements
 
 - Home Assistant 2024.1 or later
-- Python package: `openleadr==0.6.5` (installed automatically via `manifest.json`)
+- Python package: `openleadr==0.5.30` (installed automatically via `manifest.json`)
 - A Modbus TCP integration configured for your inverter, exposing a `number` entity for power limit (e.g. `number.inverter_power_limit`)
 
 ## Installation
