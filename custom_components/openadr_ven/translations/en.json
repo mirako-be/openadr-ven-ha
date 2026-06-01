@@ -1,0 +1,53 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "OpenADR VEN — connection",
+        "data": {
+          "vtn_url":       "VTN URL",
+          "ven_name":      "VEN name",
+          "verify_tls":    "Verify TLS certificate",
+          "cert_path":     "Client certificate path (.crt)",
+          "key_path":      "Private key path (.key)",
+          "ca_cert_path":  "CA certificate path (.crt)"
+        },
+        "data_description": {
+          "vtn_url":      "Full HTTPS URL of the VTN endpoint",
+          "ven_name":     "Unique identifier for this VEN",
+          "cert_path":    "Leave blank for unauthenticated connections",
+          "ca_cert_path": "Leave blank to use system CA store"
+        }
+      },
+      "target": {
+        "title": "OpenADR VEN — inverter target",
+        "data": {
+          "target_entity": "Modbus power limit entity"
+        },
+        "data_description": {
+          "target_entity": "The number entity that controls inverter power (e.g. number.inverter_power_limit)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach VTN — check the URL and certificates",
+      "invalid_cert":   "Certificate or key file not found or invalid"
+    },
+    "abort": {
+      "already_configured": "This VEN is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Signal mapping",
+        "description": "Map OpenADR SIMPLE signal levels to inverter power setpoints.",
+        "data": {
+          "level_0_pct": "SIMPLE level 0 — setpoint (%)",
+          "level_1_pct": "SIMPLE level 1 — setpoint (%)",
+          "level_2_pct": "SIMPLE level 2 — setpoint (%)",
+          "level_3_pct": "SIMPLE level 3 — setpoint (%)"
+        }
+      }
+    }
+  }
+}
