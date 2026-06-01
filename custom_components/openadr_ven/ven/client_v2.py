@@ -1,10 +1,13 @@
-"""OpenADR 2.0b VEN client adapter wrapping openleadr."""
+"""OpenADR 2.0b VEN client adapter wrapping openleadr.
+
+openleadr is imported lazily inside __init__ to avoid a module-level
+ImportError caused by openleadr -> signxml -> pyOpenSSL incompatibilities
+on Python 3.12+ with pyOpenSSL >= 24.0.0.
+"""
 from __future__ import annotations
 
 import asyncio
 import logging
-
-from openleadr import OpenADRClient
 
 from .base import EventCallback, NormalizedEvent, VENClientBase
 
@@ -30,6 +33,11 @@ class OpenADR2Client(VENClientBase):
         verify_hostname: bool = True,
     ) -> None:
         super().__init__(on_event)
+
+        # Lazy import: openleadr pulls in signxml which requires
+        # pyOpenSSL < 24.0.0. Deferring until instantiation means
+        # the module can be imported safely on Python 3.12+.
+        from openleadr import OpenADRClient  # noqa: PLC0415
 
         self._client = OpenADRClient(
             ven_name=ven_name,

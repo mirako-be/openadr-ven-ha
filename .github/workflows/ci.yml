@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install openleadr==0.5.30 ruff pytest pytest-homeassistant-custom-component
+          pip install openleadr==0.5.30 "pyOpenSSL<24.0.0" ruff pytest pytest-homeassistant-custom-component
 
       - name: Lint (ruff)
         run: ruff check custom_components/
