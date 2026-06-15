@@ -84,7 +84,7 @@ class OpenADRVENConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="target",
             data_schema=vol.Schema({
                 vol.Required(CONF_TARGET_ENTITY): selector.EntitySelector(
-                    selector.EntitySelectorConfig(domain="number")
+                    selector.EntitySelectorConfig(domain=["number", "input_number"])
                 ),
             }),
         )
