@@ -29,9 +29,23 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
+_CONNECTION_SCHEMA = vol.Schema({
+    vol.Required(CONF_VTN_URL): selector.TextSelector(
+        selector.TextSelectorConfig(type=selector.TextSelectorType.URL)
+    ),
+    vol.Required(CONF_VEN_NAME): selector.TextSelector(),
+    vol.Required(CONF_TOKEN_URL): selector.TextSelector(
+        selector.TextSelectorConfig(type=selector.TextSelectorType.URL)
+    ),
+    vol.Required(CONF_CLIENT_ID): selector.TextSelector(),
+    vol.Required(CONF_CLIENT_SECRET): selector.TextSelector(
+        selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
+    ),
+})
+
 
 class OpenADRVENConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Two-step config flow: OAuth2 connection → target entity."""
+    """Two-step config flow: OAuth2 connection -> target entity."""
 
     VERSION = 1
     _connection_data: dict = {}
@@ -49,13 +63,10 @@ class OpenADRVENConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema({
-                vol.Required(CONF_VTN_URL): str,
-                vol.Required(CONF_VEN_NAME, default="ven-001"): str,
-                vol.Required(CONF_TOKEN_URL): str,
-                vol.Required(CONF_CLIENT_ID): str,
-                vol.Required(CONF_CLIENT_SECRET): str,
-            }),
+            # Repopulate fields with previously submitted values on error
+            data_schema=self.add_suggested_values_to_schema(
+                _CONNECTION_SCHEMA, user_input or {}
+            ),
             errors=errors,
         )
 
