@@ -76,8 +76,7 @@ class OpenADR3Client(VENClientBase):
         _LOGGER.debug("Fetching OAuth2 token from %s", self._token_url)
         async with self._session.post(
             self._token_url,
-            data={
-                "grant_type":    "client_credentials",
+            json={
                 "client_id":     self._client_id,
                 "client_secret": self._client_secret,
             },

@@ -96,8 +96,7 @@ class OpenADRVENConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.post(
                     data[CONF_TOKEN_URL],
-                    data={
-                        "grant_type":    "client_credentials",
+                    json={
                         "client_id":     data[CONF_CLIENT_ID],
                         "client_secret": data[CONF_CLIENT_SECRET],
                     },
