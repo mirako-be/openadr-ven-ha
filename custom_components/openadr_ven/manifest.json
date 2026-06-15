@@ -3,7 +3,7 @@
   "name": "OpenADR VEN",
   "version": "0.0.1",
   "documentation": "https://github.com/mirako-be/openadr-ven-ha",
-  "requirements": ["openleadr==0.5.30"],
+  "requirements": [],
   "dependencies": [],
   "codeowners": [],
   "iot_class": "cloud_polling",
