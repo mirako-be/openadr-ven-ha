@@ -90,7 +90,11 @@ class OpenADRVENConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def _validate(self, data: dict) -> str | None:
-        """Try fetching an OAuth2 token to validate credentials."""
+        """Try fetching an OAuth2 token to validate credentials.
+
+        Only the HTTP status code is checked — response body structure
+        varies by operator and is not validated here.
+        """
         try:
             timeout = aiohttp.ClientTimeout(total=10)
             async with aiohttp.ClientSession(timeout=timeout) as session:
@@ -101,11 +105,9 @@ class OpenADRVENConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         "client_secret": data[CONF_CLIENT_SECRET],
                     },
                 ) as resp:
-                    if resp.status == 401:
+                    if resp.status in (401, 403):
                         return "invalid_auth"
                     resp.raise_for_status()
-                    if "access_token" not in await resp.json():
-                        return "invalid_auth"
         except Exception as exc:  # noqa: BLE001
             _LOGGER.debug("OAuth2 validation failed: %s", exc)
             return "cannot_connect"
