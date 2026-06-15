@@ -85,7 +85,7 @@ class OpenADR3Client(VENClientBase):
             resp.raise_for_status()
             payload = await resp.json()
 
-        self._token = payload["access_token"]
+        self._token = payload["token"]
         expires_in  = int(payload.get("expires_in", 3600))
         self._token_expires = now + timedelta(seconds=expires_in - _TOKEN_REFRESH_BUFFER)
         _LOGGER.debug("OAuth2 token acquired, expires in %ss", expires_in)
