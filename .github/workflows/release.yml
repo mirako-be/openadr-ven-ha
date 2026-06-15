@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version number without v-prefix (e.g. 0.1.0)"
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Use a PAT so the push triggers the CI workflow on the new commit
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate version format
+        run: |
+          if ! echo "${{ inputs.version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "ERROR: version must be semver (e.g. 0.1.0)"
+            exit 1
+          fi
+
+      - name: Bump version in manifest.json
+        run: |
+          python3 - << 'EOF'
+          import json
+          path = "custom_components/openadr_ven/manifest.json"
+          with open(path) as f:
+              m = json.load(f)
+          m["version"] = "${{ inputs.version }}"
+          with open(path, "w") as f:
+              json.dump(m, f, indent=2)
+              f.write("\n")
+          print(f"manifest.json version set to {m['version']}")
+          EOF
+
+      - name: Commit, tag and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add custom_components/openadr_ven/manifest.json
+          git commit -m "chore: release v${{ inputs.version }}"
+          git tag "v${{ inputs.version }}"
+          git push origin main
+          git push origin "v${{ inputs.version }}"
+
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "v${{ inputs.version }}" \
+            --title "v${{ inputs.version }}" \
+            --generate-notes \
+            --verify-tag
