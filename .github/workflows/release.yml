@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version number without v-prefix (e.g. 0.1.0)"
+        description: "Version to release — must match manifest.json (e.g. 0.1.0)"
         required: true
         type: string
 
@@ -16,9 +16,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          # Use a PAT so the push triggers the CI workflow on the new commit
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Validate version format
         run: |
@@ -27,28 +24,26 @@ jobs:
             exit 1
           fi
 
-      - name: Bump version in manifest.json
+      - name: Verify manifest.json matches input version
         run: |
-          python3 - << 'EOF'
+          MANIFEST_VERSION=$(python3 -c "
           import json
-          path = "custom_components/openadr_ven/manifest.json"
-          with open(path) as f:
-              m = json.load(f)
-          m["version"] = "${{ inputs.version }}"
-          with open(path, "w") as f:
-              json.dump(m, f, indent=2)
-              f.write("\n")
-          print(f"manifest.json version set to {m['version']}")
-          EOF
+          with open('custom_components/openadr_ven/manifest.json') as f:
+              print(json.load(f)['version'])
+          ")
+          echo "manifest.json version: $MANIFEST_VERSION"
+          echo "Input version:         ${{ inputs.version }}"
+          if [ "$MANIFEST_VERSION" != "${{ inputs.version }}" ]; then
+            echo "ERROR: manifest.json says $MANIFEST_VERSION but input is ${{ inputs.version }}"
+            echo "Bump the version in manifest.json via a PR first, then run this workflow."
+            exit 1
+          fi
 
-      - name: Commit, tag and push
+      - name: Tag and push
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add custom_components/openadr_ven/manifest.json
-          git commit -m "chore: release v${{ inputs.version }}"
           git tag "v${{ inputs.version }}"
-          git push origin main
           git push origin "v${{ inputs.version }}"
 
       - name: Create GitHub release
