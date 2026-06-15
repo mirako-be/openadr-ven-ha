@@ -1,7 +1,7 @@
 {
   "domain": "openadr_ven",
   "name": "OpenADR VEN",
-  "version": "2026.06.15.02",
+  "version": "v0.0.1",
   "documentation": "https://github.com/mirako-be/openadr-ven-ha",
   "requirements": ["openleadr==0.5.30"],
   "dependencies": [],
