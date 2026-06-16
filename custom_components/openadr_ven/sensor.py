@@ -45,7 +45,7 @@ class _DRBaseSensor(SensorEntity):
             "identifiers": {(DOMAIN, self._entry.entry_id)},
             "name": f"OpenADR VEN ({self._entry.data.get('ven_name', '')})",
             "manufacturer": "OpenADR Alliance",
-            "model": "Virtual End Node (2.0b)",
+            "model": "Virtual End Node",
         }
 
     async def async_added_to_hass(self) -> None:
